@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Dealer</title>
+</head>
+<body>
+  <h1>Edit Dealer</h1>
+  <form action="/dealers/update/<%= dealer.id %>" method="POST">
+    <input type="text" name="legalname" value="<%= dealer.legalname %>" required>
+    <input type="text" name="tname" value="<%= dealer.tname %>">
+    <input type="text" name="address" value="<%= dealer.address %>">
+    <button type="submit">Update</button>
+  </form>
+  <a href="/">Back</a>
+</body>
+</html>

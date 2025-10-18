@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head><title>Edit Product</title></head>
+<body>
+  <h1>Edit Product</h1>
+  <form action="/products/update/<%= product.id %>" 
+    method="POST"
+    enctype="multipart/form-data">
+    <label>Name:</label>
+    <input type="text" name="name" value="<%= product.name %>" required><br><br>
+
+    <label>Price:</label>
+    <input type="number" step="0.01" name="price" value="<%= product.price %>" required><br><br>
+
+    <label>Dealer:</label>
+    <select name="dealer_id">
+      <option value="">-- Select Dealer --</option>
+      <% dealers.forEach(d => { %>
+        <option value="<%= d.id %>" <%= product.dealer_id === d.id ? 'selected' : '' %>>
+          <%= d.legalname %>
+        </option>
+      <% }) %>
+    </select><br><br>
+
+    <label>Desc2:</label>
+    <input type="text" name="desc2" value="<%= product.desc2 %>" required><br><br>
+    <label>Image:</label>
+    <input type="text" name="img" value="<%= product.img %>" required><br><br>
+
+    <% if (product.img) { %>
+      <label>Current Image:</label><br>
+      <img src="<%= product.img %>" alt="Product Image" width="150"><br><br>
+    <% } %>
+
+    <label>Upload New Image:</label>
+    <input type="file" name="image" accept="image/*"><br><br>
+
+
+    <button type="submit">Update</button>
+  </form>
+  <a href="/">Back</a>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Category</title>
+</head>
+<body>
+  <h1>Edit Category</h1>
+  <form action="/category/update/<%= category.id %>" method="POST">
+    <label>Sort Code:</label>
+    <input type="text" name="sortcode" value="<%= category.sortcode %>" required><br><br>
+    <label>Category Name</label>
+    <input type="text" name="cname" value="<%= category.cname %>"><br><br>
+
+    <label>Dealer:</label>
+    <select name="dealer_id">
+      <option value="">-- Select Dealer --</option>
+      <% dealers.forEach(d => { %>
+        <option value="<%= d.id %>" <%= category.dealer_id === d.id ? 'selected' : '' %>>
+          <%= d.legalname %>
+        </option>
+      <% }) %>
+     </select><br><br>
+
+    <button type="submit">Update</button>
+  </form>
+  <a href="/">Back</a>
+</body>
+</html>

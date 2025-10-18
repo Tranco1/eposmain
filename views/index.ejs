@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Maintenance Dashboard</title>
+  <style>
+    .tab { display:inline-block; margin-right:10px; cursor:pointer; }
+    .tab-content { display:none; }
+    .active { display:block; }
+  </style>
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+      document.getElementById(tabId).style.display = 'block';
+    }
+    window.onload = () => showTab('users');
+  </script>
+</head>
+<body>
+  <h1>Maintenance Dashboard</h1>
+  <p>Welcome, <%= (typeof user !== 'undefined') ? user.name : '' %> | <a href="/logout">Logout</a></p>
+
+  <div>
+    <span class="tab" onclick="showTab('users')">Users</span>
+    <span class="tab" onclick="showTab('products')">Products</span>
+    <span class="tab" onclick="showTab('orders')">Orders</span>
+    <span class="tab" onclick="showTab('dealers')">Dealers</span>
+    <span class="tab" onclick="showTab('category')">Categorys</span>
+  </div>
+
+  <!-- USERS -->
+  <div id="users" class="tab-content">
+    <h2>Users</h2>
+    <form action="/users/add" method="POST">
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <select name="dealer_id">
+        <option value="">-- Select Dealer --</option>
+        <% dealers.forEach(d => { %>
+          <option value="<%= d.id %>"><%= d.legalname %></option>
+        <% }) %>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+    <table border="1">
+      <tr><th>ID</th><th>Name</th><th>Email</th><th>Dealer</th><th>Actions</th></tr>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.id %></td>
+          <td><%= u.name %></td>
+          <td><%= u.email %></td>
+          <td><%= u.dealer_name || '' %></td>
+          <td>
+            <a href="/users/edit/<%= u.id %>">Edit</a>
+            <a href="/users/delete/<%= u.id %>">Delete</a>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div id="products" class="tab-content">
+    <h2>Products</h2>
+    <form action="/products/add" method="POST">
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="number" step="0.01" name="price" placeholder="Price" required>
+      <select name="dealer_id">
+        <option value="">-- Select Dealer --</option>
+        <% dealers.forEach(d => { %>
+          <option value="<%= d.id %>"><%= d.legalname %></option>
+        <% }) %>
+      </select>
+      <input type="text" name="desc2" placeholder="Desc2" required>
+      <input type="text" name="img" placeholder="Image" required>
+
+      <select name="category">
+        <option value="">-- Select Category --</option>
+        <% category.forEach(c => { %>
+          <option value="<%= c.id %>"><%= c.cname %></option>
+        <% }) %>
+      </select>
+
+      <button type="submit">Add</button>
+    </form>
+    <table border="1">
+      <tr><th>ID</th><th>Name</th><th>Price</th><th>desc2</th><th>img</th><th>category</th><th>Actions</th></tr>
+      <% products.forEach(p => { %>
+        <tr>
+          <td><%= p.id %></td>
+          <td><%= p.name %></td>
+          <td><%= p.price %></td>
+          <td><%= p.desc2 %></td>
+          <td><%= p.img %></td>
+          <td><%= p.category_name || '' %></td>
+          <td>
+            <a href="/products/edit/<%= p.id %>">Edit</a>
+            <a href="/products/delete/<%= p.id %>">Delete</a>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
+
+  <!-- ORDERS -->
+  <div id="orders" class="tab-content">
+    <h2>Orders</h2>
+    <form action="/orders/add" method="POST">
+      <select name="user_id" required>
+        <% users.forEach(u => { %>
+          <option value="<%= u.id %>"><%= u.name %></option>
+        <% }) %>
+      </select>
+      <input type="text" name="customer_name" placeholder="Customer Name" required>      
+      <input type="date" name="order_date" placeholder="Order Date" required>      
+      <input type="number" name="total" placeholder="Total" required>
+      <select name="dealer_id">
+        <option value="">-- Select Dealer --</option>
+        <% dealers.forEach(d => { %>
+          <option value="<%= d.id %>"><%= d.legalname %></option>
+        <% }) %>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+    <table border="1">
+      <tr><th>OrderID</th><th>User</th><th>Customer_Name</th><th>Order_Date</th><th>Total</th><th>Dealer</th><th>Actions</th></tr>
+      <% orders.forEach(o => { %>
+        <tr>
+          <td><%= o.order_id %></td>
+          <td><%= o.user_name %></td>
+          <td><%= o.customer_name %></td>
+          <td><%= o.order_date %></td>  
+          <td><%= o.total %></td>
+          <td><%= o.dealer_name || '' %></td>
+          <td>
+            <a href="/orders/edit/<%= o.order_id %>">Edit</a>
+            <a href="/orders/delete/<%= o.order_id %>">Delete</a>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
+
+  <!-- DEALERS -->
+  <div id="dealers" class="tab-content">
+    <h2>Dealers</h2>
+    <form action="/dealers/add" method="POST">
+      <input type="text" name="legalname" placeholder="Legal Name" required>
+      <input type="text" name="tname" placeholder="Trade Name" required>
+      <input type="text" name="address" placeholder="Address" required>
+      <button type="submit">Add</button>
+    </form>
+    <table border="1">
+      <tr><th>ID</th><th>Legal Name</th><th>Trade Name</th><th>Address</th><th>Actions</th></tr>
+      <% dealers.forEach(d => { %>
+        <tr>
+          <td><%= d.id %></td>
+          <td><%= d.legalname %></td>
+          <td><%= d.tname %></td>
+          <td><%= d.address %></td>
+          <td>
+            <a href="/dealers/edit/<%= d.id %>">Edit</a>
+            <a href="/dealers/delete/<%= d.id %>">Delete</a>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
+
+  <!-- CATEGORY -->
+  <div id="category" class="tab-content">
+    <h2>Category</h2>
+    <form action="/category/add" method="POST">
+      <input type="text" name="sortcode" placeholder="Sort Order" required>
+      <input type="text" name="cname" placeholder="Category Name" required>
+      <select name="dealer_id">
+        <option value="">-- Select Dealer --</option>
+        <% dealers.forEach(d => { %>
+          <option value="<%= d.id %>"><%= d.legalname %></option>
+        <% }) %>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+    <table border="1">
+      <tr><th>ID</th><th>Sort Order</th><th>Category Name</th><th>Dealer_id</th><th>Actions</th></tr>
+      <% category.forEach(c => { %>
+        <tr>
+          <td><%= c.id %></td>
+          <td><%= c.sortcode %></td>
+          <td><%= c.cname %></td>
+          <td><%= c.dealer_id %></td>
+          <td>
+            <a href="/category/edit/<%= c.id %>">Edit</a>
+            <a href="/category/delete/<%= c.id %>">Delete</a>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
+
+
+</body>
+</html>
